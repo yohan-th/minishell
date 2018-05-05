@@ -14,7 +14,7 @@
 
 .PHONY: all clean fclean re
 
-CFLAGS = -c -o2 -Wall -Wextra -Werror
+CFLAGS = -c -Wall -Wextra -Werror
 
 NAME = minishell
 
