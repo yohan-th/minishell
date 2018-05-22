@@ -13,7 +13,7 @@
 
 #include "../Include/minishell.h"
 
-int 	file_exist (char *filename)
+int 	file_exist(char *filename)
 {
 	struct stat   buffer;
 	return (stat (filename, &buffer) == 0);
@@ -32,7 +32,7 @@ char	*get_var(char *var_key)
 	return (ret);
 }
 
-char	*srch_envp(char **envp, char *var)
+char	*get_envp(char **envp, char *var)
 {
 	char *tmp;
 
@@ -45,7 +45,10 @@ char	*srch_envp(char **envp, char *var)
 		free(tmp);
 		envp++;
 	}
-	free(tmp);
+	if (*envp != NULL)
+		free(tmp);
+	else
+		return (NULL);
 	return (ft_strchr(*envp, '=') + 1);
 }
 
@@ -60,7 +63,7 @@ char	*path_cmd(char *cmd, char **envp)
 	char	*real_path;
 	int		i;
 
-	all_path = ft_strsplit(srch_envp(envp, "PATH"), ':');
+	all_path = ft_strsplit(get_envp(envp, "PATH"), ':');
 	ret = NULL;
 	i = 0;
 	while (all_path[i] != NULL)
