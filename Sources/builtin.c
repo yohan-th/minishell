@@ -49,17 +49,17 @@ void	check_builtin_env(char ***envp, char **cmd)
 
 char	*check_builtin(char **cmd, char ***envp)
 {
-	if (ft_strcmp("echo", cmd[0]) == 0)
+	if (*cmd && ft_strcmp("echo", cmd[0]) == 0)
 		builtin_echo(cmd, envp);
-	else if (ft_strcmp("cd", cmd[0]) == 0)
+	else if (*cmd && ft_strcmp("cd", cmd[0]) == 0)
 		builtin_cd(cmd, envp);
-	else if (ft_strcmp("setenv", cmd[0]) == 0)
+	else if (*cmd && ft_strcmp("setenv", cmd[0]) == 0)
 		check_builtin_setenv(envp, cmd);
-	else if (ft_strcmp("unsetenv", cmd[0]) == 0)
+	else if (*cmd && ft_strcmp("unsetenv", cmd[0]) == 0)
 		check_builtin_unsetenv(envp, cmd);
-	else if (ft_strcmp("env", cmd[0]) == 0)
+	else if (*cmd && ft_strcmp("env", cmd[0]) == 0)
 		check_builtin_env(envp, cmd);
-	else if (ft_strcmp("exit", cmd[0]) == 0)
+	else if (*cmd && ft_strcmp("exit", cmd[0]) == 0)
 		return ("exit");
 	else
 		return (NULL);
