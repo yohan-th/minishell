@@ -13,9 +13,6 @@
 
 #include "../Include/minishell.h"
 
-
-
-
 void 	check_builtin_setenv(char ***envp, char **cmd)
 {
 	if (cmd[1] != NULL && cmd[2] != NULL && cmd[3] == NULL)
@@ -50,7 +47,7 @@ void	check_builtin_env(char ***envp, char **cmd)
 char	*check_builtin(char **cmd, char ***envp)
 {
 	if (*cmd && ft_strcmp("echo", cmd[0]) == 0)
-		builtin_echo(cmd, envp);
+		builtin_echo(cmd);
 	else if (*cmd && ft_strcmp("cd", cmd[0]) == 0)
 		builtin_cd(cmd, envp);
 	else if (*cmd && ft_strcmp("setenv", cmd[0]) == 0)

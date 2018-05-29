@@ -41,7 +41,6 @@ char 	*get_cur_dir(void)
 void	ft_strdelchar(char **str, char c)
 {
 	int		jump;
-	char	*ret;
 	int 	i;
 
 	jump = 0;

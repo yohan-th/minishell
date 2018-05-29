@@ -13,10 +13,9 @@
 
 #include "../Include/minishell.h"
 
-void	builtin_echo(char **cmd, char ***envp)
+void	builtin_echo(char **cmd)
 {
 	int		i;
-	char	*str;
 	BOOL	newline;
 
 	newline = 1;

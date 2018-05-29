@@ -14,7 +14,7 @@
 
 .PHONY: all clean fclean re
 
-CFLAGS = -c -Wall -Wextra -Werror
+CFLAGS = -c -g -Wall -Wextra -Werror
 
 NAME = minishell
 
@@ -25,7 +25,12 @@ DIR_OBJ = Objects
 
 SRCS =  main.c \
         get_path.c \
-        tools.c
+        tools.c \
+        builtin_cd.c \
+        builtin_allenv.c \
+        builtin_echo.c \
+        strsplit_mnshl.c \
+        builtin.c
 
 INCLUDES_FILE = minishell.h
 
@@ -39,7 +44,7 @@ $(NAME): $(OBJS)
 
 $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c  $(DIR_INC)/$(INCLUDES_FILE)
 	@mkdir -p $(DIR_OBJ)
-	gcc -o $@ -c $< -I $(DIR_INC)
+	gcc -o $@ -c $< -I $(DIR_INC) $(CFLAGS)
 
 clean:
 	@rm -rf $(DIR_OBJ)
