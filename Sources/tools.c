@@ -14,15 +14,6 @@
 #include "../Include/minishell.h"
 
 /*
-** Si pas d'option P on corrige le PATH pour garder le link
-*/
-
-char	*keep_link_path(char *cur_dir, char *oldpwd)
-{
-	return (cur_dir);
-}
-
-/*
 ** Retourne le path absolu.
 ** On commence avec 8 octet puis on monte puissance 2
 */
@@ -66,7 +57,7 @@ void	ft_strdelchar(char **str, char c)
 		(*str)[i] = '\0';
 }
 
-int 	ft_arrlen(const char **arr)
+int 	ft_arrlen(char **arr)
 {
 	int i;
 
@@ -76,18 +67,19 @@ int 	ft_arrlen(const char **arr)
 	return (i);
 }
 
-char 	**ft_arrdup(const char **arr)
+char 	**ft_arrdup(char **arr)
 {
 	int		i;
 	char 	**ret;
 
-	ret = (char **)malloc(sizeof(char *) * ft_arrlen(arr) + 1);
+	ret = (char **)malloc(sizeof(char *) * ft_arrlen(arr) + sizeof(char *));
 	i = 0;
 	while (arr[i] != NULL)
 	{
 		ret[i] = ft_strdup(arr[i]);
 		i++;
 	}
+	ret[i] = NULL;
 	return (ret);
 }
 
@@ -96,31 +88,9 @@ void	free_tab(char **tab)
 	int i;
 
 	i = 0;
-	while (tab[i] != NULL)
+	while (tab != NULL && tab[i] != NULL)
 		free(tab[i++]);
-	free(tab);
+	if (tab != NULL)
+		free(tab);
 }
 
-/*
-** Si on on rentre dans un builtin on retourne 0
-** pour ne pas lancer de fork
-*/
-int 	check_builtin(char **cmd, char ***envp)
-{
-	if (ft_strcmp("echo", cmd[0]) == 0)
-		builtin_echo(cmd, envp);
-	else if (ft_strcmp("cd", cmd[0]) == 0)
-		builtin_cd(cmd, envp);
-	else if (ft_strcmp("setenv", cmd[0]) == 0)
-		;
-	else if (ft_strcmp("unsetenv", cmd[0]) == 0)
-		;
-	else if (ft_strcmp("env", cmd[0]) == 0)
-		builtin_env(envp);
-	else if (ft_strcmp("exit", cmd[0]) == 0)
-		;
-	else
-		return (1);
-	//write(1, "\n", 1);
-	return (0);
-}

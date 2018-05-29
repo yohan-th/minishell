@@ -29,7 +29,7 @@ void	builtin_echo(char **cmd, char ***envp)
 	while (cmd[i] != NULL || cmd[i])
 	{
 		if (ft_strcmp(cmd[i], "") != 0)
-			ft_printf("%s ", cmd[i]);
+			printf("%s ", cmd[i]);
 		i++;
 	}
 	if (newline)

@@ -13,49 +13,59 @@
 
 #include "../Include/minishell.h"
 
+int 	clean_exit(char ***cmd, char ***dup_env, char **pathcmd)
+{
+	free(*pathcmd);
+	free_tab(*cmd);
+	free_tab(*dup_env);
+	return (1);
+}
+
 void	mnshlt_error(char *type)
 {
-	char *fd;
-
-	if (ft_strcmp(type, "quote missing"))
+	if (ft_strcmp(type, "setenv usage") == 0)
 	{
-		ft_printf("quote> ");
-		get_next_line(0, &fd);
-		ft_printf(
-				"[1]   T'étais à la recherche d'un outsanding project avec ce "
-						"test de nazis ? Garde le pour 21/42 sh\n");
+		printf("minishell: setenv: invalid argument\n"
+						  "usage: setenv VAR VALUE\n");
 	}
-	exit(1);
+	else if (ft_strcmp(type, "unsetenv usage") == 0)
+	{
+		printf("minishell: unsetenv: invalid argument\n"
+						  "usage: unsetenv VAR\n");
+	}
+	else if (ft_strcmp(type, "env usage") == 0)
+		printf("minishell: env: invalid argument\nusage: env VAR\n");
 }
 
 /*
-** En realite OLDPWD n'existe pas au lieu d'avoir une valeur vide
+** Dans bash OLDPWD n'existe pas au lieu d'avoir une valeur vide
 */
 
-int     main(int ac, char **av, const char **envp)
+int     main(int ac, char **av, char **envp)
 {
 	char	*fd;
 	char	**cmd;
 	char	*pathcmd;
 	char 	**dup_envp;
+	char 	*built_in;
 
 	dup_envp = ft_arrdup(envp);
-	builtin_delenv(&dup_envp, "OLDPWD");
-	ft_printf("$>");
+	builtin_unsetenv(&dup_envp, "OLDPWD");
 	while (1)
 	{
-		get_next_line(0, &fd);
-		cmd = strsplit_mnshl(fd, dup_envp);
-		free(fd);
-		if (check_builtin(cmd, &dup_envp) && !(fork()))
-		{
-			pathcmd = path_cmd(cmd[0], dup_envp);
-			execve(pathcmd, cmd, dup_envp);
-			printf("EXIT\n");
-			exit(1);
-		}
-		wait(NULL);
 		ft_printf("$>");
+		get_next_line(0, &fd);
+		cmd = strsplit_mnshl(&fd, dup_envp);
+		pathcmd = path_cmd(cmd[0], dup_envp);
+		built_in = check_builtin(cmd, &dup_envp);
+		if (built_in && ft_strcmp("exit", built_in) == 0)
+			return (clean_exit(&cmd, &dup_envp, &pathcmd));
+		else if (!(built_in) && ft_strcmp(pathcmd, "invalide commande") == 0)
+			printf("minishell: invalide commande: %s\n", cmd[0]);
+		else if (!(built_in) && cmd[0] && !(fork()))
+			execve(pathcmd, cmd, dup_envp);
+		wait(NULL);
+		free(pathcmd);
 		free_tab(cmd);
 	}
 }

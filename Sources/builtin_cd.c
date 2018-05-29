@@ -36,7 +36,7 @@ char	*cd_rmv_last_path(char *cur_dir)
 void	cd_change_env(char ***envp, char *pwd, char *old_pwd)
 {
 	if (chdir(pwd) == -1)
-		ft_printf("minishell: cd: OLDPWD not set\n");
+		printf("minishell: cd: OLDPWD not set\n");
 	else
 	{
 		builtin_setenv(envp, "PWD", pwd);
@@ -54,9 +54,9 @@ void	cd_move(char ***envp, char *cur_dir, char *dir)
 		tmp = ft_strjoin_mltp(3, cur_dir, "/", dir);
 	access(tmp, W_OK);
 	if (errno == 13)
-		ft_printf("minishell: cd: %s: Permission denied\n", dir);
+		printf("minishell: cd: %s: Permission denied\n", dir);
 	else if (errno == 2)
-		ft_printf("minishell: cd: %s: No such file or directory\n", dir);
+		printf("minishell: cd: %s: No such file or directory\n", dir);
 	else
 		cd_change_env(envp, tmp, cur_dir);
 	free(tmp);
