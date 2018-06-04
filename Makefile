@@ -6,7 +6,7 @@
 #    By: ythollet <marvin@le-101.fr>                +:+   +:    +:    +:+      #
 #                                                  #+#   #+    #+    #+#       #
 #    Created: 2018/05/04 20:51:29 by ythollet     #+#   ##    ##    #+#        #
-#    Updated: 2018/05/04 20:53:05 by ythollet    ###    #+. /#+    ###.fr      #
+#    Updated: 2018/06/04 12:41:23 by ythollet    ###    #+. /#+    ###.fr      #
 #                                                          /                   #
 #                                                         /                    #
 # **************************************************************************** #
@@ -30,6 +30,7 @@ SRCS =  main.c \
         builtin_allenv.c \
         builtin_echo.c \
         strsplit_mnshl.c \
+		strsplit_mnshl_tools.c \
         builtin.c
 
 INCLUDES_FILE = minishell.h
