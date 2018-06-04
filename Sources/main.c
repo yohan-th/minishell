@@ -32,7 +32,7 @@ void	clean_wait(char **pathcmd, char ***cmd)
 	free_tab(*cmd);
 }
 
-int 	clean_exit(char ***cmd, char ***dup_env, char **pathcmd)
+int		clean_exit(char ***cmd, char ***dup_env, char **pathcmd)
 {
 	free(*pathcmd);
 	free_tab(*cmd);
@@ -44,29 +44,29 @@ void	mnshlt_error(char *type)
 {
 	if (ft_strcmp(type, "setenv usage") == 0)
 	{
-		printf("minishell: setenv: invalid argument\n"
-						  "usage: setenv VAR VALUE\n");
+		ft_printf("minishell: setenv: invalid argument\n"
+					"usage: setenv VAR VALUE\n");
 	}
 	else if (ft_strcmp(type, "unsetenv usage") == 0)
 	{
-		printf("minishell: unsetenv: invalid argument\n"
-						  "usage: unsetenv VAR\n");
+		ft_printf("minishell: unsetenv: invalid argument\n"
+					"usage: unsetenv VAR\n");
 	}
 	else if (ft_strcmp(type, "env usage") == 0)
-		printf("minishell: env: invalid argument\nusage: env VAR\n");
+		ft_printf("minishell: env: invalid argument\nusage: env VAR\n");
 }
 
 /*
 ** Dans bash OLDPWD n'existe pas au lieu d'avoir une valeur vide
 */
 
-int     main(int ac, char **av, char **envp)
+int		main(int ac, char **av, char **envp)
 {
 	char	*fd;
 	char	**cmd;
 	char	*pathcmd;
-	char 	**dup_envp;
-	char 	*built_in;
+	char	**dup_envp;
+	char	*built_in;
 
 	if (check_argc(ac, av))
 		return (0);
@@ -82,8 +82,8 @@ int     main(int ac, char **av, char **envp)
 		if (built_in && ft_strcmp("exit", built_in) == 0)
 			return (clean_exit(&cmd, &dup_envp, &pathcmd));
 		else if (!(built_in) && ft_strcmp(pathcmd, "invalide commande") == 0)
-			printf("minishell: invalide commande: %s\n", cmd[0]);
-		else if (!(built_in) && cmd[0] && !(fork()))
+			ft_printf("minishell: invalide commande: %s\n", cmd[0]);
+		else if (!(built_in) && cmd[0] && cmd[0][0] && !(fork()))
 			execve(pathcmd, cmd, dup_envp);
 		clean_wait(&pathcmd, &cmd);
 	}

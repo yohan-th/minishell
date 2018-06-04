@@ -13,7 +13,7 @@
 
 #include "../Include/minishell.h"
 
-void 	check_builtin_setenv(char ***envp, char **cmd)
+void	check_builtin_setenv(char ***envp, char **cmd)
 {
 	if (cmd[1] != NULL && cmd[2] != NULL && cmd[3] == NULL)
 		builtin_setenv(envp, cmd[1], cmd[2]);

@@ -13,68 +13,10 @@
 
 #include "../Include/minishell.h"
 
-char 	define_quote_bgn(char c)
-{
-	if (c == '\'')
-		return ('\'');
-	else if (c == '"')
-		return ('"');
-	else
-		return (' ');
-}
-
-/*
-** Déplace str jusqu'a la fin de l'arg et retourn sa len
-*/
-
-int		nxt_arg(char **str, int i, char quote)
-{
-	while ((*str)[i] && (*str)[i] != quote)
-	{
-		i++;
-		if ((*str)[i] && (*str)[i - 1] == '\\' && (*str)[i] == quote &&
-			quote != '\'')
-			i++;
-		if (quote == ' ' && ft_strchr("'\"", (*str)[i]))
-			quote = (*str)[i++];
-		if (ft_strchr("'\"", quote) && (*str)[i] == quote &&
-			!ft_strchr("\0 ", (*str)[i + 1]))
-		{
-			quote = ' ';
-			i++;
-		}
-	}
-	return (i);
-}
-
-int		get_nbr_arg(char *str)
-{
-	int		nb_arg;
-	int		i;
-	char 	quote;
-
-	nb_arg = 0;
-	i = 0;
-	while (str[i])
-	{
-		while (ft_strchr("\t ",str[i]))
-			i++;
-		if (!str[i])
-			break ;
-		else
-			nb_arg += 1;
-		quote = define_quote_bgn(str[i]);
-		if (ft_strchr("'\"", quote))
-			i++;
-		i = nxt_arg(&str, i, quote);
-	}
-	return (nb_arg);
-}
-
 int		mnshl_argsub_env(char **arg, int i, char **envp)
 {
 	char	*tmp;
-	char 	*var;
+	char	*var;
 	size_t	len;
 
 	tmp = *arg + i;
@@ -95,9 +37,42 @@ int		mnshl_argsub_env(char **arg, int i, char **envp)
 	*arg = ft_strdup(tmp);
 	free(tmp);
 	if (var == NULL)
-		return (i);
+		return (i - 1);
 	else
 		return (i + ft_strlen(var));
+}
+
+int		mnshl_argsub_tilde(char **arg, int i, char **envp)
+{
+	char	*tmp;
+	char	*var;
+
+	tmp = *arg + i;
+	tmp[0] = '\0';
+	var = get_envp(envp, "HOME");
+	if (var == NULL)
+		tmp = ft_strjoin_mltp(2, *arg, *arg + i + 1);
+	else
+		tmp = ft_strjoin_mltp(3, *arg, var, *arg + i + 1);
+	free(*arg);
+	*arg = ft_strdup(tmp);
+	free(tmp);
+	if (var == NULL)
+		return (i - 1);
+	else
+		return (i + ft_strlen(var));
+}
+
+int 	mnshl_argsub(char **arg, int i, char **envp, char end_arg)
+{
+	if ((*arg)[i] == '$' && end_arg != '\'')
+	{
+		return (mnshl_argsub_env(arg, i, envp));
+	}
+	else if ((*arg)[i] == '~' && end_arg == ' ' && i == 0 && (*arg)[i + 1] == '\0')
+		return (mnshl_argsub_tilde(arg, i, envp));
+	else
+		return (i + 1);
 }
 
 /*
@@ -110,8 +85,8 @@ int		mnshl_argsub_env(char **arg, int i, char **envp)
 
 char	*mnshl_quotesub(char *arg, char end_arg, char **envp)
 {
-	int 	i;
-	char 	*strdelchar;
+	int		i;
+	char	*strdelchar;
 
 	i = 0;
 	while (arg[i])
@@ -125,8 +100,8 @@ char	*mnshl_quotesub(char *arg, char end_arg, char **envp)
 			ft_strdelchar(&strdelchar, arg[i]);
 		else if (arg[i] == '\\' && arg[i + 1] != end_arg && end_arg != '\'')
 			ft_strdelchar(&strdelchar, arg[i]);
-		else if (arg[i] == '$' && end_arg != '\'')
-			i = mnshl_argsub_env(&arg, i, envp) - 1;
+		else if (arg[i] == '$' || arg[i] == '~')
+			i = mnshl_argsub(&arg, i, envp, end_arg);
 		else if (end_arg != ' ' && arg[i] == end_arg)
 		{
 			ft_strdelchar(&strdelchar, end_arg);
@@ -141,11 +116,11 @@ char	*get_arg(char **str, char **envp)
 {
 	int		bgn_arg;
 	int		i;
-	char 	quote;
-	char 	*arg;
+	char	quote;
+	char	*arg;
 
 	i = 0;
-	while (ft_strchr("\t ",(*str)[i]))
+	while (ft_strchr("\t ", (*str)[i]))
 		i++;
 	bgn_arg = i;
 	quote = define_quote_bgn((*str)[i]);
@@ -168,7 +143,7 @@ char	**strsplit_mnshl(char **str, char **envp)
 	int		nb_arg;
 	char	end_arg;
 	int		i;
-	char 	*free_str;
+	char	*free_str;
 
 	nb_arg = get_nbr_arg(*str);
 	cmd = (char **)malloc(sizeof(char *) * nb_arg + sizeof(char *));
@@ -178,6 +153,7 @@ char	**strsplit_mnshl(char **str, char **envp)
 	while (i < nb_arg)
 		cmd[i++] = get_arg(str, envp);
 	cmd[i] = NULL;
-	ft_strdel(&free_str);
+	if (nb_arg > 0)
+		ft_strdel(&free_str);
 	return (cmd);
 }

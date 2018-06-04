@@ -43,17 +43,28 @@ char 	**ft_arrdup(char **arr);
 void 	ft_strdelchar(char **str, char c);
 char 	*get_cur_dir(void);
 int 	ft_arrlen(char **arr);
+char	define_quote_bgn(char c);
+int		nxt_arg(char **str, int i, char quote);
+int		get_nbr_arg(char *str);
 
 /*
 ** Hard test
-** <echo "$HOME"'$HOME'$HOME +$HOME>
-** <echo "debut \" fin">
-** <echo 'debut \' suite' fin'>
+** <  echo ~ ~test"  '$USER  \""+\\$USER+$US\ER+'  t"e$USER  \'>
+** <echo "test>
+** <echo test\>
+** <echo 'test\'
 ** se mettre dans un path qui contient un lien et <cd -L -L -P -L .>
-** lancer minishell et <cd -> --> bash: cd: OLDPWD not set
+** lancer minishell et <cd -> bash: cd: OLDPWD not set
 ** <mkdir test> && <chmod 000 test> && <cd test>
 ** <cd \./> && pwd
+** <cd ~/folder>
 ** cd folder1///./folder2/.// && pwd
+** setenv PATH change_exec_directory
+** unsetenv PATH
+** cat * | ./minishell
+** env -i ./minishell && cd -
+** unsetenv HOME
+** ./minishell < "n'importe quel fichier"
 */
 
 #endif

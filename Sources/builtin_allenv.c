@@ -13,12 +13,12 @@
 
 #include "../Include/minishell.h"
 
-char 	**rmv_key_env(char **envp, char *key)
+char	**rmv_key_env(char **envp, char *key)
 {
 	int		i;
-	int 	y;
-	char 	**ret;
-	char 	*var;
+	int		y;
+	char	**ret;
+	char	*var;
 
 	ret = (char **)malloc(sizeof(char *) * ft_arrlen(envp));
 	i = 0;
@@ -63,9 +63,10 @@ void	builtin_unsetenv(char ***envp, char *key)
 char	**append_key_env(char **envp, char *key, char *value)
 {
 	int		i;
-	char 	**ret;
+	char	**ret;
 
-	ret = (char **)malloc(sizeof(char *) * ft_arrlen(envp) + sizeof(char *) * 2);
+	ret = (char **)malloc(sizeof(char *) * ft_arrlen(envp) +
+								sizeof(char *) * 2);
 	i = 0;
 	while (i < ft_arrlen(envp))
 	{
@@ -114,14 +115,14 @@ void	builtin_env(char ***envp, char *key)
 	while ((*envp)[i] != NULL)
 	{
 		if (key == NULL)
-			printf("%s\n", (*envp)[i++]);
+			ft_printf("%s\n", (*envp)[i++]);
 		else if (ft_strcmp(key, get_var((*envp)[i++])) == 0)
 		{
-			printf("%s\n", ft_strchr((*envp)[--i], '=') + 1);
+			ft_printf("%s\n", ft_strchr((*envp)[--i], '=') + 1);
 			found = 1;
 			break ;
 		}
 	}
 	if (key != NULL && found == 0)
-		printf("minishell: env: %s not found\n", key);
+		ft_printf("minishell: env: %s not found\n", key);
 }

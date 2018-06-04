@@ -13,11 +13,11 @@
 
 #include "../Include/minishell.h"
 
-int 	file_exist(char *filename)
+int		file_exist(char *filename)
 {
-	struct stat   buffer;
+	struct stat	buffer;
 
-	return (stat (filename, &buffer) == 0);
+	return (stat(filename, &buffer) == 0);
 }
 
 char	*get_var(char *var_key)

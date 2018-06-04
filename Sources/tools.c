@@ -18,10 +18,10 @@
 ** On commence avec 8 octet puis on monte puissance 2
 */
 
-char 	*get_cur_dir(void)
+char	*get_cur_dir(void)
 {
 	size_t	buf;
-	char 	*dir;
+	char	*dir;
 
 	buf = 8;
 	dir = ft_strnew(buf);
@@ -40,8 +40,8 @@ char 	*get_cur_dir(void)
 
 void	ft_strdelchar(char **str, char c)
 {
-	int		jump;
-	int 	i;
+	int	jump;
+	int	i;
 
 	jump = 0;
 	i = 0;
@@ -56,7 +56,7 @@ void	ft_strdelchar(char **str, char c)
 		(*str)[i] = '\0';
 }
 
-int 	ft_arrlen(char **arr)
+int		ft_arrlen(char **arr)
 {
 	int i;
 
@@ -66,10 +66,10 @@ int 	ft_arrlen(char **arr)
 	return (i);
 }
 
-char 	**ft_arrdup(char **arr)
+char	**ft_arrdup(char **arr)
 {
 	int		i;
-	char 	**ret;
+	char	**ret;
 
 	ret = (char **)malloc(sizeof(char *) * ft_arrlen(arr) + sizeof(char *));
 	i = 0;
@@ -92,4 +92,3 @@ void	free_tab(char **tab)
 	if (tab != NULL)
 		free(tab);
 }
-
