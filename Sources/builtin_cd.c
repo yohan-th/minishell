@@ -39,12 +39,10 @@ void	cd_change_env(char ***envp, char *pwd, char *old_pwd, char *dir)
 	{
 		if (!pwd)
 			ft_printf("minishell: cd: $HOME env not set\n");
-		else if (errno == 13)
+		else if (access(pwd, F_OK) == 0 && access(pwd, X_OK) == -1)
 			ft_printf("minishell: cd: %s: Permission denied\n", dir);
-		else if (errno == 20)
-			ft_printf("minishell: cd: %s: Not a directory\n", dir);
-		else if (errno == 2)
-			ft_printf("minishell: cd: %s: No such file or directory\n", dir);
+		else
+			ft_printf("minishell: cd: %s: No such directory\n", dir);
 	}
 	else
 	{
