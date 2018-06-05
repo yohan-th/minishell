@@ -64,21 +64,24 @@ char	*path_cmd(char *cmd, char **envp)
 	char	**all_path;
 	int		i;
 
-	all_path = ft_strsplit(get_envp(envp, "PATH"), ':');
+	if (get_envp(envp, "PATH"))
+		all_path = ft_strsplit(get_envp(envp, "PATH"), ':');
+	else
+		all_path = NULL;
 	ret = NULL;
 	i = 0;
 	while (all_path != NULL && all_path[i] != NULL)
 	{
 		ret = ft_strjoin_mltp(3, all_path[i++], "/", cmd);
-		if (file_exist(ret))
+		if (access(ret, X_OK) == 0)
 			break ;
 		ft_strdel(&ret);
 	}
 	free_tab(all_path);
-	if (ret && file_exist(ret))
+	if (ret && access(ret, X_OK) == 0)
 		return (ret);
 	free(ret);
-	if (cmd && file_exist(cmd))
+	if (cmd && access(cmd, X_OK) == 0)
 		return (ft_strdup(cmd));
 	else
 		return (ft_strdup("invalide commande"));

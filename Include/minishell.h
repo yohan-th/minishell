@@ -29,23 +29,24 @@ void	builtin_cd(char **cmd, char ***envp);
 void	builtin_setenv(char ***envp, char *key, char *value);
 void	builtin_unsetenv(char ***envp, char *key);
 void	builtin_delenv(char ***envp, char *key);
-char 	**rmv_key_env(char **envp, char *key);
+char	**rmv_key_env(char **envp, char *key);
 void	builtin_env(char ***envp, char *key);
 void	builtin_echo(char **cmd);
 char	**strsplit_mnshl(char **str, char **envp);
-void	mnshlt_error(char *type);
+int		mnshlt_error(char *type);
 
 void	free_tab(char **tab);
 char	*check_builtin(char **cmd, char ***envp);
 char	*get_envp(char **envp, char *var);
 char	*get_var(char *var_key);
-char 	**ft_arrdup(char **arr);
-void 	ft_strdelchar(char **str, char c);
-char 	*get_cur_dir(void);
-int 	ft_arrlen(char **arr);
+char	**ft_arrdup(char **arr);
+void	ft_strdelchar(char **str, char c);
+char	*get_cur_dir(void);
+int		ft_arrlen(char **arr);
 char	define_quote_bgn(char c);
 int		nxt_arg(char **str, int i, char quote);
 int		get_nbr_arg(char *str);
+int		mnshl_argsub_env(char **arg, int i, char **envp);
 
 /*
 ** Hard test
@@ -53,17 +54,19 @@ int		get_nbr_arg(char *str);
 ** <echo "test>
 ** <echo test\>
 ** <echo 'test\'
-** se mettre dans un path qui contient un lien et <cd -L -L -P -L .>
 ** lancer minishell et <cd -> bash: cd: OLDPWD not set
-** <mkdir test> && <chmod 000 test> && <cd test>
+** se mettre dans un path qui contient un lien et <cd -L -L -P -L .>
+** puis <cd -L -P .>
+** <mkdir test1> && <chmod 666 test1> && <cd test> --> Fail
+** <mkdir test2> && <chmod 111 test2> && <cd test2> --> OK
 ** <cd \./> && pwd
 ** <cd ~/folder>
 ** cd folder1///./folder2/.// && pwd
-** setenv PATH change_exec_directory
-** unsetenv PATH
+** setenv PATH change_exec_directory && ls && /bin/ls
+** unsetenv PATH && ls && /bin/ls
 ** cat * | ./minishell
-** env -i ./minishell && cd -
-** unsetenv HOME
+** env -i ./minishell && cd - && unsetenv PATH && echo $HOME && cd ~
+** ./minishell && unsetenv HOME && cd $random --> HOME not set
 ** ./minishell < "n'importe quel fichier"
 */
 

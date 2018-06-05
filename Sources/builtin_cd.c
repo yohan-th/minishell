@@ -33,12 +33,22 @@ char	*cd_rmv_last_path(char *cur_dir)
 	return (cur_dir);
 }
 
-void	cd_change_env(char ***envp, char *pwd, char *old_pwd)
+void	cd_change_env(char ***envp, char *pwd, char *old_pwd, char *dir)
 {
-	if (chdir(pwd) == -1)
-		printf("minishell: cd: ENV var not set\n");
+	if (!pwd || access(pwd, X_OK) == -1)
+	{
+		if (!pwd)
+			ft_printf("minishell: cd: $HOME env not set\n");
+		else if (errno == 13)
+			ft_printf("minishell: cd: %s: Permission denied\n", dir);
+		else if (errno == 20)
+			ft_printf("minishell: cd: %s: Not a directory\n", dir);
+		else if (errno == 2)
+			ft_printf("minishell: cd: %s: No such file or directory\n", dir);
+	}
 	else
 	{
+		chdir(pwd);
 		builtin_setenv(envp, "PWD", pwd);
 		builtin_setenv(envp, "OLDPWD", old_pwd);
 	}
@@ -48,22 +58,15 @@ int		cd_move(char ***envp, char *cur_dir, char *dir)
 {
 	char	*tmp;
 
-	if (dir[0] == '~' && !get_envp(*envp, "HOME"))
-	{
-		printf("minishell: cd ~: $HOME env not set\n");
-		return (0);
-	}
+	if (ft_strchr(dir, '~') && !get_envp(*envp, "HOME"))
+		return (mnshlt_error("$HOME env not set"));
 	if (dir[0] == '~')
 		tmp = ft_strjoin(get_envp(*envp, "HOME"), dir + 1);
+	else if (ft_strcmp(dir, get_envp(*envp, "HOME")) == 0)
+		tmp = ft_strdup(dir);
 	else
-		tmp = ft_strjoin_mltp(3, cur_dir, "/", dir);
-	access(tmp, W_OK);
-	if (errno == 13)
-		ft_printf("minishell: cd: %s: Permission denied\n", dir);
-	else if (errno == 2)
-		ft_printf("minishell: cd: %s: No such file or directory\n", dir);
-	else
-		cd_change_env(envp, tmp, cur_dir);
+		tmp = ft_strjoin_mltp(4, cur_dir, "/", dir, "/");
+	cd_change_env(envp, tmp, cur_dir, dir);
 	free(tmp);
 	return (1);
 }
@@ -115,14 +118,14 @@ void	builtin_cd(char **cmd, char ***envp)
 		cur_dir = get_cur_dir();
 	else
 		cur_dir = ft_strdup(get_envp(*envp, "PWD"));
-	if (cmd[i] == NULL)
-		cd_change_env(envp, get_envp(*envp, "HOME"), cur_dir);
+	if (cmd[i] == NULL || ft_strlen(cmd[i]) == 0)
+		cd_change_env(envp, get_envp(*envp, "HOME"), cur_dir, "HOME");
 	else if (ft_strcmp(cmd[i], "-") == 0 && get_envp(*envp, "OLDPWD") == NULL)
 		ft_printf("minishell: cd: OLDPWD not set\n");
 	else if (ft_strcmp(cmd[i], "-") == 0)
-		cd_change_env(envp, get_envp(*envp, "OLDPWD"), cur_dir);
+		cd_change_env(envp, get_envp(*envp, "OLDPWD"), cur_dir, "OLDPWD");
 	else if (ft_strcmp(cmd[i], "..") == 0)
-		cd_change_env(envp, cd_rmv_last_path(cur_dir), cur_dir);
+		cd_change_env(envp, cd_rmv_last_path(cur_dir), cur_dir, "RMV_LAST");
 	else
 		cd_move(envp, cur_dir, cmd[i]);
 	cd_clean_path(get_envp(*envp, "PWD"));

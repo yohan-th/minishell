@@ -66,6 +66,11 @@ int		ft_arrlen(char **arr)
 	return (i);
 }
 
+/*
+** ft_arrdup est une fonction generique
+** builtin_unsetenv est seulement présent pour gagner une ligne dans le main
+*/
+
 char	**ft_arrdup(char **arr)
 {
 	int		i;
@@ -79,6 +84,7 @@ char	**ft_arrdup(char **arr)
 		i++;
 	}
 	ret[i] = NULL;
+	ret = rmv_key_env(ret, "OLDPWD");
 	return (ret);
 }
 

@@ -45,7 +45,7 @@ void	builtin_unsetenv(char ***envp, char *key)
 	char	*env_key;
 
 	i = 0;
-	while ((*envp)[i] != NULL)
+	while (*envp && (*envp)[i] != NULL)
 	{
 		env_key = get_var((*envp)[i]);
 		if (ft_strcmp(key, env_key) == 0)

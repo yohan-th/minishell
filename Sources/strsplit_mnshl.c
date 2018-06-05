@@ -13,35 +13,6 @@
 
 #include "../Include/minishell.h"
 
-int		mnshl_argsub_env(char **arg, int i, char **envp)
-{
-	char	*tmp;
-	char	*var;
-	size_t	len;
-
-	tmp = *arg + i;
-	len = 1;
-	while (tmp[len] && (ft_isalnum(tmp[len]) || tmp[len] == '_'))
-		len++;
-	if (len == 1)
-		return (i + 1);
-	tmp[0] = '\0';
-	tmp = ft_strsub(tmp, 1, len - 1);
-	var = get_envp(envp, tmp);
-	free(tmp);
-	if (var == NULL)
-		tmp = ft_strjoin_mltp(2, *arg, *arg + i + len);
-	else
-		tmp = ft_strjoin_mltp(3, *arg, var, *arg + i + len);
-	free(*arg);
-	*arg = ft_strdup(tmp);
-	free(tmp);
-	if (var == NULL)
-		return (i - 1);
-	else
-		return (i + ft_strlen(var));
-}
-
 int		mnshl_argsub_tilde(char **arg, int i, char **envp)
 {
 	char	*tmp;
@@ -60,16 +31,15 @@ int		mnshl_argsub_tilde(char **arg, int i, char **envp)
 	if (var == NULL)
 		return (i - 1);
 	else
-		return (i + ft_strlen(var));
+		return (i + ft_strlen(var) - 1);
 }
 
-int 	mnshl_argsub(char **arg, int i, char **envp, char end_arg)
+int		mnshl_argsub(char **arg, int i, char **envp, char end_arg)
 {
 	if ((*arg)[i] == '$' && end_arg != '\'')
-	{
 		return (mnshl_argsub_env(arg, i, envp));
-	}
-	else if ((*arg)[i] == '~' && end_arg == ' ' && i == 0 && (*arg)[i + 1] == '\0')
+	else if ((*arg)[i] == '~' && end_arg == ' ' && i == 0 &&
+			(*arg)[i + 1] == '\0')
 		return (mnshl_argsub_tilde(arg, i, envp));
 	else
 		return (i + 1);
@@ -89,7 +59,7 @@ char	*mnshl_quotesub(char *arg, char end_arg, char **envp)
 	char	*strdelchar;
 
 	i = 0;
-	while (arg[i])
+	while (arg && arg[i])
 	{
 		strdelchar = arg + i;
 		if (end_arg == ' ' && arg[i] == '\\')

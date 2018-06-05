@@ -23,7 +23,7 @@ void	check_builtin_setenv(char ***envp, char **cmd)
 
 void	check_builtin_unsetenv(char ***envp, char **cmd)
 {
-	if (cmd[1] != NULL && cmd[2] == NULL)
+	if (cmd[1] != NULL && cmd[2] == NULL && get_envp(*envp, cmd[1]))
 		*envp = rmv_key_env(*envp, cmd[1]);
 	else
 		mnshlt_error("unsetenv usage");
