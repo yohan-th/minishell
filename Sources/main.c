@@ -13,7 +13,7 @@
 
 #include "../Include/minishell.h"
 
-int 	exit_ctrl_d(char **var_free)
+int		exit_ctrl_d(char **var_free)
 {
 	ft_printf(" exit\n");
 	free_tab(var_free);
