@@ -13,6 +13,13 @@
 
 #include "../Include/minishell.h"
 
+int 	exit_ctrl_d(char **var_free)
+{
+	ft_printf(" exit\n");
+	free_tab(var_free);
+	return (0);
+}
+
 int		check_argc(int argc, char **argv)
 {
 	if (argc == 1)
@@ -28,19 +35,15 @@ int		check_argc(int argc, char **argv)
 int		mnshlt_error(char *type)
 {
 	if (ft_strcmp(type, "setenv usage") == 0)
-	{
 		ft_printf("minishell: setenv: invalid argument\n"
 					"usage: setenv VAR VALUE\n");
-	}
 	else if (ft_strcmp(type, "unsetenv usage") == 0)
-	{
 		ft_printf("minishell: unsetenv: invalid argument\n"
 					"usage: unsetenv VAR\n");
-	}
 	else if (ft_strcmp(type, "env usage") == 0)
 		ft_printf("minishell: env: invalid argument\nusage: env VAR\n");
-	else if (ft_strcmp(type, "$HOME env not set"))
-		printf("minishell: cd ~: $HOME env not set\n");
+	else if (ft_strcmp(type, "$HOME env not set") == 0)
+		ft_printf("minishell: cd ~: $HOME env not set\n");
 	return (0);
 }
 
@@ -55,7 +58,7 @@ int		run_cmd(char **cmd, char ***envp, char *pathcmd)
 	built_in = check_builtin(cmd, envp);
 	if (built_in && ft_strcmp("exit", built_in) == 0)
 	{
-		free(pathcmd);
+		ft_strdel(&pathcmd);
 		free_tab(cmd);
 		free_tab(*envp);
 		return (0);
@@ -89,10 +92,11 @@ int		main(int ac, char **av, char **envp)
 	{
 		ft_printf("$>");
 		get_next_line(0, &line);
+		if (line == NULL)
+			return (exit_ctrl_d(dup_envp));
 		cmd = strsplit_mnshl(line, dup_envp);
-		free(line);
+		ft_strdel(&line);
 		pathcmd = path_cmd(cmd[0], dup_envp);
-		//printf("pathcmd <%s>\n", pathcmd);
 		if (pathcmd && !(run_cmd(cmd, &dup_envp, pathcmd)))
 			return (1);
 		wait(NULL);

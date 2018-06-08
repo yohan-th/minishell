@@ -53,20 +53,18 @@ int		mnshl_argsub_env(char **arg, int i, char **envp);
 ** <echo test\>
 ** <echo 'test\'
 ** lancer minishell et <cd -> bash: cd: OLDPWD not set
-** se mettre dans un path qui contient un lien et <cd -L -L -P -L .>
-** puis <cd -L -P .>
+** path qui contient un lien et <cd -L -L -P -L .> && <cd -L -P .>
 ** <mkdir test1> && <chmod 666 test1> && <cd test> --> Fail
 ** <mkdir test2> && <chmod 111 test2> && <cd test2> --> OK
 ** <cd \./> && pwd
 ** <cd \/.///> && env PWD && cd ..
 ** <cd ~///./folder//.//>
-** setenv PATH change_exec_directory && ls && /bin/ls
-** unsetenv PATH && ls && /bin/ls
 ** cat * | ./minishell
-** env -i ./minishell && cd - && unsetenv PATH && echo $HOME && cd ~
+** env -i ./minishell && unsetenv PATH && echo $HOME && cd ~
 ** ./minishell && unsetenv HOME && cd $random --> HOME not set
 ** ./minishell < "n'importe quel fichier"
 ** </> && <~> && </Users>
+** CtrlD
 */
 
 #endif

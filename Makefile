@@ -6,7 +6,7 @@
 #    By: ythollet <marvin@le-101.fr>                +:+   +:    +:    +:+      #
 #                                                  #+#   #+    #+    #+#       #
 #    Created: 2018/05/04 20:51:29 by ythollet     #+#   ##    ##    #+#        #
-#    Updated: 2018/06/04 12:41:23 by ythollet    ###    #+. /#+    ###.fr      #
+#    Updated: 2018/06/05 18:47:21 by ythollet    ###    #+. /#+    ###.fr      #
 #                                                          /                   #
 #                                                         /                    #
 # **************************************************************************** #
@@ -14,7 +14,7 @@
 
 .PHONY: all clean fclean re
 
-CFLAGS = -c -g -Wall -Wextra -Werror
+CFLAGS = -g -Wall -Wextra -Werror
 
 NAME = minishell
 
@@ -37,7 +37,14 @@ INCLUDES_FILE = minishell.h
 
 OBJS = $(addprefix $(DIR_OBJ)/,$(SRCS:.c=.o))
 
-all: $(NAME)
+all: lib $(NAME)
+
+lib: 
+		@if !(make -q -C $(DIR_LIB)); then \
+			rm -f $(OBJ); \
+			rm -f $(NAME); \
+			make -C $(DIR_LIB);\
+		fi;
 
 $(NAME): $(OBJS)
 	@make -C $(DIR_LIB)
