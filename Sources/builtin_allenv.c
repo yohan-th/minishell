@@ -20,6 +20,8 @@ char	**rmv_key_env(char **envp, char *key)
 	char	**ret;
 	char	*var;
 
+	if (!*envp || envp[0] == NULL)
+		return (envp);
 	ret = (char **)malloc(sizeof(char *) * ft_arrlen(envp));
 	i = 0;
 	y = 0;
@@ -29,10 +31,9 @@ char	**rmv_key_env(char **envp, char *key)
 		if (ft_strcmp(var, key) == 0)
 			y++;
 		free(var);
-		if (envp[y] != NULL)
-			ret[i] = ft_strdup(envp[y]);
-		i++;
-		y++;
+		if (envp[y] == NULL)
+			break ;
+		ret[i++] = ft_strdup(envp[y++]);
 	}
 	free_tab(envp);
 	ret[i] = NULL;
@@ -109,19 +110,24 @@ void	builtin_env(char ***envp, char *key)
 {
 	int		i;
 	BOOL	found;
+	char	*env_key;
 
 	i = 0;
 	found = 0;
 	while ((*envp)[i] != NULL)
 	{
+		env_key = get_var((*envp)[i]);
 		if (key == NULL)
-			ft_printf("%s\n", (*envp)[i++]);
-		else if (ft_strcmp(key, get_var((*envp)[i++])) == 0)
+			ft_printf("%s\n", (*envp)[i]);
+		else if (ft_strcmp(key, env_key) == 0)
 		{
-			ft_printf("%s\n", ft_strchr((*envp)[--i], '=') + 1);
+			ft_printf("%s\n", ft_strchr((*envp)[i], '=') + 1);
 			found = 1;
+			free(env_key);
 			break ;
 		}
+		free(env_key);
+		i++;
 	}
 	if (key != NULL && found == 0)
 		ft_printf("minishell: env: %s not found\n", key);

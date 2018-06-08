@@ -52,16 +52,20 @@ void	cd_change_env(char ***envp, char *pwd, char *old_pwd, char *dir)
 	}
 }
 
+/*
+** {tmp} doit terminer par "/"
+*/
+
 int		cd_move(char ***envp, char *cur_dir, char *dir)
 {
 	char	*tmp;
 
 	if (ft_strchr(dir, '~') && !get_envp(*envp, "HOME"))
 		return (mnshlt_error("$HOME env not set"));
-	if (dir[0] == '~')
-		tmp = ft_strjoin(get_envp(*envp, "HOME"), dir + 1);
-	else if (ft_strcmp(dir, get_envp(*envp, "HOME")) == 0)
-		tmp = ft_strdup(dir);
+	else if (dir[0] == '~')
+		tmp = ft_strjoin_mltp(3, get_envp(*envp, "HOME"), dir + 1, "/");
+	else if (dir[0] == '/')
+		tmp = ft_strjoin(dir, "/");
 	else
 		tmp = ft_strjoin_mltp(4, cur_dir, "/", dir, "/");
 	cd_change_env(envp, tmp, cur_dir, dir);
@@ -95,7 +99,7 @@ void	cd_clean_path(char *pwd)
 			i++;
 	}
 	i--;
-	while (pwd && ft_strchr("./ ", pwd[i]))
+	while (pwd && ft_strchr("./ ", pwd[i]) && i > 0)
 		pwd[i--] = '\0';
 }
 
@@ -122,7 +126,7 @@ void	builtin_cd(char **cmd, char ***envp)
 		ft_printf("minishell: cd: OLDPWD not set\n");
 	else if (ft_strcmp(cmd[i], "-") == 0)
 		cd_change_env(envp, get_envp(*envp, "OLDPWD"), cur_dir, "OLDPWD");
-	else if (ft_strcmp(cmd[i], "..") == 0)
+	else if (ft_strcmp(cmd[i], "..") == 0 && ft_strcmp(cur_dir, "/") != 0)
 		cd_change_env(envp, cd_rmv_last_path(cur_dir), cur_dir, "RMV_LAST");
 	else
 		cd_move(envp, cur_dir, cmd[i]);

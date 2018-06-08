@@ -44,7 +44,11 @@ int		mnshlt_error(char *type)
 	return (0);
 }
 
-int		run_cmd(char **cmd, char ***envp, char *pathcmd, char *line)
+/*
+** command unknown est pour kill le fork
+*/
+
+int		run_cmd(char **cmd, char ***envp, char *pathcmd)
 {
 	char *built_in;
 
@@ -56,17 +60,17 @@ int		run_cmd(char **cmd, char ***envp, char *pathcmd, char *line)
 		free_tab(*envp);
 		return (0);
 	}
-	else if (!(built_in) && ft_strcmp(pathcmd, "invalide commande") == 0)
-		ft_printf("minishell: invalide commande: %s\n", cmd[0]);
-	else if (!(built_in) && (!cmd[0] || !cmd[0][0]))
-		free(line);
+	else if (!(built_in) && ft_strcmp(pathcmd, "command not found") == 0)
+		ft_printf("minishell: %s: command not found\n", cmd[0]);
+	else if (!(built_in) && ft_strcmp(pathcmd, "cmd is directory") == 0)
+		ft_printf("minishell: %s: is a directory\n", cmd[0]);
 	else if (!(built_in) && cmd[0] && cmd[0][0] && !(fork()))
 		execve(pathcmd, cmd, *envp);
 	return (1);
 }
 
 /*
-** Dans bash OLDPWD n'existe pas au lieu d'avoir une valeur vide
+** Lorsqu'on lance minishell, OLDPWD ne doit pas exister, on le del de dup_envp
 */
 
 int		main(int ac, char **av, char **envp)
@@ -79,14 +83,17 @@ int		main(int ac, char **av, char **envp)
 	if (check_argc(ac, av))
 		return (0);
 	dup_envp = ft_arrdup(envp);
+	dup_envp = rmv_key_env(dup_envp, "OLDPWD");
 	line = NULL;
 	while (1)
 	{
 		ft_printf("$>");
 		get_next_line(0, &line);
-		cmd = strsplit_mnshl(&line, dup_envp);
+		cmd = strsplit_mnshl(line, dup_envp);
+		free(line);
 		pathcmd = path_cmd(cmd[0], dup_envp);
-		if (!(run_cmd(cmd, &dup_envp, pathcmd, line)))
+		//printf("pathcmd <%s>\n", pathcmd);
+		if (pathcmd && !(run_cmd(cmd, &dup_envp, pathcmd)))
 			return (1);
 		wait(NULL);
 		free(pathcmd);

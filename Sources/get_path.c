@@ -13,13 +13,6 @@
 
 #include "../Include/minishell.h"
 
-int		file_exist(char *filename)
-{
-	struct stat	buffer;
-
-	return (stat(filename, &buffer) == 0);
-}
-
 char	*get_var(char *var_key)
 {
 	int		i;
@@ -53,6 +46,23 @@ char	*get_envp(char **envp, char *var)
 	return (ft_strchr(*envp, '=') + 1);
 }
 
+int		is_directory(char *path)
+{
+	struct stat statbuf;
+
+	if (stat(path, &statbuf) != 0)
+		return (0);
+	return (S_ISDIR(statbuf.st_mode));
+}
+
+char	*check_cmd(char *cmd)
+{
+	if (cmd && is_directory(cmd))
+		return (ft_strdup("cmd is directory"));
+	else
+		return (ft_strdup("command not found"));
+}
+
 /*
 ** Recherche le bon path de {cmd} dans les differents path de {envp PATH}
 ** si non trouvé ou PATH inexistant on retourne {cmd}
@@ -64,25 +74,23 @@ char	*path_cmd(char *cmd, char **envp)
 	char	**all_path;
 	int		i;
 
-	if (get_envp(envp, "PATH"))
-		all_path = ft_strsplit(get_envp(envp, "PATH"), ':');
-	else
-		all_path = NULL;
+	if (cmd == NULL)
+		return (NULL);
+	all_path = ft_strsplit(get_envp(envp, "PATH"), ':');
 	ret = NULL;
 	i = 0;
-	while (all_path != NULL && all_path[i] != NULL)
+	while (get_envp(envp, "PATH") && all_path[i] != NULL &&
+			!ft_strchr(cmd, '/'))
 	{
 		ret = ft_strjoin_mltp(3, all_path[i++], "/", cmd);
-		if (access(ret, X_OK) == 0)
+		if (access(ret, X_OK) != -1)
 			break ;
 		ft_strdel(&ret);
 	}
 	free_tab(all_path);
-	if (ret && access(ret, X_OK) == 0)
+	if ((ret && access(ret, X_OK) != -1))
 		return (ret);
-	free(ret);
-	if (cmd && access(cmd, X_OK) == 0)
+	else if (!is_directory(cmd) && access(cmd, X_OK) != -1)
 		return (ft_strdup(cmd));
-	else
-		return (ft_strdup("invalide commande"));
+	return (check_cmd(cmd));
 }

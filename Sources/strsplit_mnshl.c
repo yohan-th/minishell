@@ -46,11 +46,11 @@ int		mnshl_argsub(char **arg, int i, char **envp, char end_arg)
 }
 
 /*
-** Permet de supprimer les {\} et de transformer les var de env uniquement
-** si {end_arg} est double cote ou back cote {"} ou sans rien
+** Permet de supprimer les {\} et de transformer les var de env uniquement si
+** {end_arg} est double cote ou back cote {"} ou sans rien
 ** echo "$HOME" '$HOME' $HOME
 ** --> /Users/ythollet $HOME /Users/ythollet
-** /!\ le cas d'un {\} en fin de ligne n'est pas gere
+** /!\ le cas d'un {\} en fin de ligne n'est pas gere (multiline)
 */
 
 char	*mnshl_quotesub(char *arg, char end_arg, char **envp)
@@ -103,27 +103,19 @@ char	*get_arg(char **str, char **envp)
 	return (arg);
 }
 
-/*
-** Le {*str} dans le while est une securité si nb_arg = {get_nbr_arg} est faux
-*/
-
-char	**strsplit_mnshl(char **str, char **envp)
+char	**strsplit_mnshl(char *str, char **envp)
 {
 	char	**cmd;
 	int		nb_arg;
 	char	end_arg;
 	int		i;
-	char	*free_str;
 
-	nb_arg = get_nbr_arg(*str);
+	nb_arg = get_nbr_arg(str);
 	cmd = (char **)malloc(sizeof(char *) * nb_arg + sizeof(char *));
 	end_arg = 0;
-	free_str = *str;
 	i = 0;
 	while (i < nb_arg)
-		cmd[i++] = get_arg(str, envp);
+		cmd[i++] = get_arg(&str, envp);
 	cmd[i] = NULL;
-	if (nb_arg > 0)
-		ft_strdel(&free_str);
 	return (cmd);
 }

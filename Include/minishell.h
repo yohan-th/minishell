@@ -17,6 +17,8 @@
 
 # include <unistd.h>
 # include <sys/wait.h>
+# include <sys/types.h>
+# include <sys/stat.h>
 
 # include "../Libft/Includes/libft.h"
 
@@ -28,7 +30,7 @@ void	builtin_delenv(char ***envp, char *key);
 char	**rmv_key_env(char **envp, char *key);
 void	builtin_env(char ***envp, char *key);
 void	builtin_echo(char **cmd);
-char	**strsplit_mnshl(char **str, char **envp);
+char	**strsplit_mnshl(char *str, char **envp);
 int		mnshlt_error(char *type);
 
 void	free_tab(char **tab);
@@ -56,14 +58,15 @@ int		mnshl_argsub_env(char **arg, int i, char **envp);
 ** <mkdir test1> && <chmod 666 test1> && <cd test> --> Fail
 ** <mkdir test2> && <chmod 111 test2> && <cd test2> --> OK
 ** <cd \./> && pwd
-** <cd ~/folder>
-** cd folder1///./folder2/.// && pwd
+** <cd \/.///> && env PWD && cd ..
+** <cd ~///./folder//.//>
 ** setenv PATH change_exec_directory && ls && /bin/ls
 ** unsetenv PATH && ls && /bin/ls
 ** cat * | ./minishell
 ** env -i ./minishell && cd - && unsetenv PATH && echo $HOME && cd ~
 ** ./minishell && unsetenv HOME && cd $random --> HOME not set
 ** ./minishell < "n'importe quel fichier"
+** </> && <~> && </Users>
 */
 
 #endif
