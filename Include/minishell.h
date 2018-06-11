@@ -6,7 +6,7 @@
 /*   By: ythollet <ythollet@student.le-101.fr>      +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/05/04 20:58:23 by ythollet     #+#   ##    ##    #+#       */
-/*   Updated: 2018/05/04 20:58:23 by ythollet    ###    #+. /#+    ###.fr     */
+/*   Updated: 2018/06/11 12:20:02 by ythollet    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -64,7 +64,7 @@ int		mnshl_argsub_env(char **arg, int i, char **envp);
 ** ./minishell && unsetenv HOME && cd $random --> HOME not set
 ** ./minishell < "n'importe quel fichier"
 ** </> && <~> && </Users>
-** CtrlD
+** ./minishell && ./minishell && ./minishell && CtrC && CtrlD && exit
 */
 
 #endif
